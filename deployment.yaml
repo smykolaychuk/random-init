@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: k8s-course
+  name: k8s-course
+  labels:
+    app: k8s-course
+spec:
+#  replicas: 2
+  template:
+    metadata:
+      name: k8s-course
+      labels:
+        app: k8s-course
+    spec:
+      volumes:
+        - name: logs
+          persistentVolumeClaim:
+            claimName: log-dir-pvc
+      containers:
+        - name: random-app
+          image: eu.gcr.io/kuber-training-272213/random-app:v15
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: IfNotPresent
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 60
+            failureThreshold: 180
+          volumeMounts:
+            - mountPath: /usr/share/logs
+              name: logs
+          env:
+            - name: RANDOM_APP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: random-app-secret
+                  key: app-user
+            - name: RANDOM_APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: random-app-secret
+                  key: app-pass
+            - name: LOG_MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: random-app-config
+                  key: log-message
+        - name: nginx
+          image: eu.gcr.io/kuber-training-272213/nginx:v3
+          ports:
+            - containerPort: 80
+          imagePullPolicy: IfNotPresent
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 60
+          volumeMounts:
+            - mountPath: /usr/share/logs
+              name: logs
+              readOnly: true
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: k8s-course
+
+---
+
+

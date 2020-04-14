@@ -1,0 +1,24 @@
+spring:
+  security:
+    user:
+      name: testuser
+      password: testpassword
+log:
+  message: "this is default logging message"
+
+
+
+---
+spring:
+  profiles: prod
+  security:
+    user:
+      name: ${RANDOM_APP_USER}
+      password: ${RANDOM_APP_PASSWORD}
+
+logging:
+  file:
+    name: "/usr/share/logs/random-init/random-app.log"
+    total-size-cap: "40MB"
+log:
+  message: ${LOG_MESSAGE}

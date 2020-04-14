@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: k8s-course
+  name: app-storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  capacity:
+    storage: 0.1Gi
+  hostPath:
+    path: "/Users/smykolaychuk/tmp/kuber"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: k8s-course
+  name: log-dir-pvc
+spec:
+  storageClassName: manual
+  volumeName: app-storage
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 0.09Gi
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  namespace: k8s-course
+#  name: config-dir-pvc
+#spec:
+#  storageClassName: manual
+#  volumeName: app-storage
+#  accessModes:
+#    - ReadOnlyMany
+#  resources:
+#    requests:
+#      storage: 0.01Gi
