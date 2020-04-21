@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+  namespace: k8s-course
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: redis
+      labels:
+        app: redis
+    spec:
+      volumes:
+        - name: persist
+          persistentVolumeClaim:
+            claimName: log-dir-pvc
+      containers:
+        - name: redis
+          image: redis
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: /data
+              name: persist
+          args:
+            - "--appendonly"
+            - "yes"
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: redis

@@ -6,7 +6,7 @@ metadata:
   labels:
     app: k8s-course
 spec:
-#  replicas: 2
+  replicas: 2
   template:
     metadata:
       name: k8s-course
@@ -19,7 +19,7 @@ spec:
             claimName: log-dir-pvc
       containers:
         - name: random-app
-          image: eu.gcr.io/kuber-training-272213/random-app:v15
+          image: eu.gcr.io/kuber-training-272213/random-app:v19
           ports:
             - containerPort: 8080
           imagePullPolicy: IfNotPresent
@@ -31,6 +31,7 @@ spec:
             failureThreshold: 60
           livenessProbe:
             httpGet:
+              path: /hello
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 60
@@ -54,6 +55,8 @@ spec:
                 configMapKeyRef:
                   name: random-app-config
                   key: log-message
+            - name: REDIS_HOST
+              value: redis-service
         - name: nginx
           image: eu.gcr.io/kuber-training-272213/nginx:v3
           ports:
@@ -73,7 +76,5 @@ spec:
   selector:
     matchLabels:
       app: k8s-course
-
----
 
 

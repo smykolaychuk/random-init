@@ -3,11 +3,18 @@ spring:
     user:
       name: testuser
       password: testpassword
+  redis:
+    host: "localhost"
+    port: 6379
 log:
   message: "this is default logging message"
-
-
-
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-headers: "*"
+        allowed-methods: "*"
+        allowed-origins: "*"
 ---
 spring:
   profiles: prod
@@ -15,6 +22,9 @@ spring:
     user:
       name: ${RANDOM_APP_USER}
       password: ${RANDOM_APP_PASSWORD}
+  redis:
+    host: ${REDIS_HOST}
+    port: 6379
 
 logging:
   file:

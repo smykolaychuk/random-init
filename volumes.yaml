@@ -6,14 +6,12 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: standard
-  volumeMode: Filesystem
-  persistentVolumeReclaimPolicy: Retain
   capacity:
-    storage: 10Gi
-  gcePersistentDisk:
-    fsType: ext4
-    pdName: disk-1
+    storage: 3Gi
+  nfs:
+    server: nfs-server.k8s-course.svc.cluster.local
+    path: "/"
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -22,6 +20,7 @@ metadata:
   name: log-dir-pvc
 spec:
   volumeName: app-storage
+  storageClassName: ""
   accessModes:
     - ReadWriteMany
   resources:
@@ -37,6 +36,7 @@ spec:
 #  name: log-dir-ro-pvc
 #spec:
 #  volumeName: app-storage
+#  storageClassName: ""
 #  accessModes:
 #    - ReadOnlyMany
 #  resources:
