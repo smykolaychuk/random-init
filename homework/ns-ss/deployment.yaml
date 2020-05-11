@@ -1,22 +1,19 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  namespace: k8s-course
+  namespace: ns-ss
   name: k8s-course
   labels:
     app: k8s-course
 spec:
   replicas: 1
+  serviceName: "k8s-course"
   template:
     metadata:
       name: k8s-course
       labels:
         app: k8s-course
     spec:
-      volumes:
-        - name: logs
-          persistentVolumeClaim:
-            claimName: log-dir-pvc
       containers:
         - name: random-app
           image: eu.gcr.io/kuber-training-272213/random-app:v20
@@ -37,9 +34,6 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 60
             failureThreshold: 180
-          volumeMounts:
-            - mountPath: /usr/share/logs
-              name: logs
           env:
             - name: RANDOM_APP_USER
               valueFrom:
@@ -58,6 +52,13 @@ spec:
                   key: log-message
             - name: REDIS_HOST
               value: redis-service
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 50m
+              memory: 128Mi
       restartPolicy: Always
   selector:
     matchLabels:

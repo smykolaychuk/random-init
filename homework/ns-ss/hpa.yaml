@@ -1,0 +1,13 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: random-app
+  namespace: ns-ss
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: k8s-course
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80

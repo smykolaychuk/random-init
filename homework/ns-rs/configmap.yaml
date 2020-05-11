@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: random-app-config
+  namespace: ns-rs
+data:
+  log-message: "This is overridden by config map log message"

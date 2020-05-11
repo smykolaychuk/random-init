@@ -15,6 +15,9 @@ management:
         allowed-headers: "*"
         allowed-methods: "*"
         allowed-origins: "*"
+server:
+  servlet:
+    context-path: /random-app
 ---
 spring:
   profiles: prod
@@ -28,7 +31,7 @@ spring:
 
 logging:
   file:
-    name: "/usr/share/logs/random-init/random-app.log"
+    name: "/usr/share/logs  /random-init/random-app.log"
     total-size-cap: "40MB"
 log:
   message: ${LOG_MESSAGE}

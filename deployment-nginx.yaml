@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: k8s-course
+  name: k8s-course-nginx
+  labels:
+    app: k8s-course-nginx
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: k8s-course-nginx
+      labels:
+        app: k8s-course-nginx
+    spec:
+      volumes:
+        - name: logs
+          persistentVolumeClaim:
+            claimName: log-dir-pvc
+      containers:
+        - name: nginx
+          image: eu.gcr.io/kuber-training-272213/nginx:v5
+          ports:
+            - containerPort: 80
+          imagePullPolicy: IfNotPresent
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 60
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 60
+          volumeMounts:
+            - mountPath: /usr/share/logs
+              name: logs
+              readOnly: true
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: k8s-course-nginx
+
+
